@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Model Performance — Verdant</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%2310b981%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.4 19 2c2 2 2.6 3.5 3.7 9.2a7 7 0 0 1-13.8 1.8Z%22></path><path d=%22M2 21c0-3 1.85-5.36 5.08-6C9.5 14.5 12 13 13 12%22></path></svg>">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="dashboard.css" />
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="topbar">
+    <div class="topbar__brand">
+      <span class="topbar__mark">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M12 2C7 6 4 10 4 14a8 8 0 0 0 16 0c0-4-3-8-8-12Z" stroke-width="2"/>
+          <path d="M12 8v12" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <span class="topbar__name">Verdant</span>
+    </div>
+    <nav class="topbar__nav">
+      <a href="index.html">Home</a>
+      <a href="index.html#diagnose">Diagnose</a>
+      <a href="dashboard.html" class="topbar__cta">Model performance</a>
+    </nav>
+  </header>
+
+  <!-- Main Dashboard Content -->
+  <main class="dash">
+    <!-- Introduction Header -->
+    <section class="dash__intro">
+      <p class="section-eyebrow">Model Performance & Analytics</p>
+      <h1 class="dash__title">Behind the diagnosis</h1>
+      <p class="dash__subtitle">
+        A transparent look at how the classification model was trained and evaluated —
+        overall accuracy, per-class breakdown, and model confidence metrics.
+      </p>
+      
+      <!-- Export Report Button -->
+      <div style="margin-top: 15px;">
+        <button id="exportReportBtn" style="background: #10b981; color: #fff; border: none; padding: 10px 18px; border-radius: 6px; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: background 0.2s;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          Export Model Report (JSON)
+        </button>
+      </div>
+    </section>
+
+    <!-- Overview Metrics Row -->
+    <section class="metric-row" id="metricRow">
+      <div class="metric-card">
+        <span class="metric-card__label">Total Classes</span>
+        <span class="metric-card__value" id="statClasses">38</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-card__label">Training Images</span>
+        <span class="metric-card__value" id="statTrain">—</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-card__label">SVM Accuracy</span>
+        <span class="metric-card__value" id="statSvm">—</span>
+      </div>
+      <div class="metric-card metric-card--highlight">
+        <span class="metric-card__label">CNN Accuracy</span>
+        <span class="metric-card__value" id="statCnn">—</span>
+      </div>
+    </section>
+
+    <!-- Model Comparison Section -->
+    <section class="dash-panel">
+      <h2 class="dash-panel__title">Model Comparison</h2>
+      <p class="dash-panel__caption">Overview metrics comparing traditional machine learning classifiers against deep convolutional networks.</p>
+      <div class="model-comparison-list">
+        <div class="comparison-item"><span>SVM Accuracy</span> <strong id="compSvm">—</strong></div>
+        <div class="comparison-item"><span>CNN Accuracy</span> <strong id="compCnn">—</strong></div>
+        <div class="comparison-item"><span>Evaluation Metrics (Precision / Recall / F1)</span> <strong>Optimized per class</strong></div>
+      </div>
+    </section>
+
+    <!-- Weakest / Strongest Class Highlight Card -->
+    <section class="dash-panel" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(59, 130, 246, 0.05)); border: 1px solid rgba(16, 185, 129, 0.2);">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+        <div>
+          <span class="section-eyebrow" style="color: #10b981;">Quick Performance Extremes</span>
+          <h3 style="color: #f9fafb; font-size: 18px; margin-top: 4px;">Model Strength & Vulnerability Highlights</h3>
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-top: 15px;">
+        <div style="background: rgba(15, 23, 42, 0.7); padding: 15px; border-radius: 8px; border-left: 4px solid #ef4444;">
+          <span style="font-size: 12px; color: #9ca3af; display: block; text-transform: uppercase; font-weight: 600;">Weakest Class (Needs Attention)</span>
+          <strong id="weakestClassVal" style="font-size: 15px; color: #f87171; display: block; margin-top: 5px;">—</strong>
+        </div>
+        <div style="background: rgba(15, 23, 42, 0.7); padding: 15px; border-radius: 8px; border-left: 4px solid #10b981;">
+          <span style="font-size: 12px; color: #9ca3af; display: block; text-transform: uppercase; font-weight: 600;">Strongest Class (Best Accuracy)</span>
+          <strong id="strongestClassVal" style="font-size: 15px; color: #34d399; display: block; margin-top: 5px;">—</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- Per-Class Performance Breakdown -->
+    <section class="dash-panel">
+      <div class="panel-header-flex" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+        <div>
+          <h2 class="dash-panel__title">Per-class performance</h2>
+          <p class="dash-panel__caption">Precision, recall, and F1-score for every disease class.</p>
+        </div>
+        <div class="class-selector-wrap">
+          <label for="classSelect" style="font-size: 14px; margin-right: 8px; color: #10b981; font-weight: 600;">Select Class:</label>
+          <select id="classSelect" class="dash-select" style="padding: 8px 12px; background: #0f172a; color: #fff; border: 1px solid #334155; border-radius: 6px; font-family: inherit;">
+            <!-- Dynamically populated classes -->
+          </select>
+        </div>
+      </div>
+
+      <!-- Selected Class Metrics Mini Cards -->
+      <div class="metric-row" style="margin-top: 20px;" id="selectedClassMetrics">
+        <div class="metric-card"><span class="metric-card__label">Precision</span><span class="metric-card__value" id="valPrecision">—</span></div>
+        <div class="metric-card"><span class="metric-card__label">Recall</span><span class="metric-card__value" id="valRecall">—</span></div>
+        <div class="metric-card"><span class="metric-card__label">F1-Score</span><span class="metric-card__value" id="valF1">—</span></div>
+        <div class="metric-card"><span class="metric-card__label">Support</span><span class="metric-card__value" id="valSupport">—</span></div>
+      </div>
+
+      <div class="chart-wrap" style="margin-top: 20px;">
+        <canvas id="perClassChart" height="110"></canvas>
+      </div>
+    </section>
+
+    <!-- Confusion Matrix / Error Insights Section -->
+    <section class="dash-panel">
+      <h2 class="dash-panel__title">Model Error Insights & Confusion Analysis</h2>
+      <p class="dash-panel__caption">Top overlapping classes and misclassification patterns across the agricultural disease categories.</p>
+      <div style="background: rgba(17, 24, 39, 0.6); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px; min-height: 200px;">
+        <div id="confusionMatrix"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer__brand">
+      <span class="topbar__mark">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M12 2C7 6 4 10 4 14a8 8 0 0 0 16 0c0-4-3-8-8-12Z" stroke-width="2"/>
+          <path d="M12 8v12" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <span>Verdant</span>
+    </div>
+    <p class="footer__note">Graduation project — CNN-based plant disease diagnosis with AI-generated treatment guidance.</p>
+  </footer>
+
+  <!-- External Scripts -->
+  <script src="chart.min.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>
